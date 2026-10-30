@@ -1,0 +1,78 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:ftbench:prediction:v1",
+  "title": "One prediction per JSONL line",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "response",
+    "status"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]{0,127}$"
+    },
+    "response": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "status": {
+      "enum": [
+        "ok",
+        "refusal",
+        "error"
+      ]
+    },
+    "error_code": {
+      "type": "string",
+      "pattern": "\\S"
+    },
+    "latency_seconds": {
+      "type": "number",
+      "minimum": 0
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "const": "ok"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "response": {
+            "type": "string"
+          }
+        }
+      },
+      "else": {
+        "properties": {
+          "response": {
+            "type": "null"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "required": [
+          "error_code"
+        ]
+      },
+      "then": {
+        "properties": {
+          "status": {
+            "const": "error"
+          }
+        }
+      }
+    }
+  ]
+}

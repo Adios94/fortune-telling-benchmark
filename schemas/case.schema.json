@@ -1,0 +1,101 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:ftbench:case:v1",
+  "title": "One case per JSONL line",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "year",
+    "track",
+    "question",
+    "choices",
+    "answer",
+    "source_id",
+    "synthetic"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]{0,127}$"
+    },
+    "year": {
+      "type": "integer",
+      "minimum": 1900,
+      "maximum": 2100
+    },
+    "track": {
+      "enum": [
+        "synthetic_pipeline",
+        "competition_agreement",
+        "rule_reasoning",
+        "real_event"
+      ]
+    },
+    "question": {
+      "type": "string",
+      "pattern": "\\S"
+    },
+    "choices": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "A",
+        "B",
+        "C",
+        "D"
+      ],
+      "properties": {
+        "A": {
+          "type": "string",
+          "pattern": "\\S"
+        },
+        "B": {
+          "type": "string",
+          "pattern": "\\S"
+        },
+        "C": {
+          "type": "string",
+          "pattern": "\\S"
+        },
+        "D": {
+          "type": "string",
+          "pattern": "\\S"
+        }
+      }
+    },
+    "answer": {
+      "enum": [
+        "A",
+        "B",
+        "C",
+        "D"
+      ]
+    },
+    "source_id": {
+      "type": "string",
+      "pattern": "\\S"
+    },
+    "synthetic": {
+      "type": "boolean"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "track": {
+            "const": "synthetic_pipeline"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "synthetic": {
+            "const": true
+          }
+        }
+      }
+    }
+  ]
+}
